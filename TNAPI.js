@@ -15,7 +15,7 @@ const RECEIVED_MESSAGE_TYPE = 1;
 
 const SIP_ENDPOINT = "prod.tncp.textnow.com";
 
-class Client extends EventEmitter{
+class Client extends EventEmitter {
     /**
      * Please run init after this.  I needed async, I'm sorry.
      */

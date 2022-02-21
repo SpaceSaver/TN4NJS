@@ -2,10 +2,16 @@ const mime = require('mime');
 const https = require('https');
 const fs = require('fs');
 const { Module } = require('module');
+const TNAPI = require("./TNAPI");
 
 const MESSAGE_TYPE = 0;
 
 class Message {
+    /**
+     * 
+     * @param {*} msg_obj 
+     * @param {TNAPI} outer_self 
+     */
     constructor(msg_obj, outer_self) {
         this.content = msg_obj["message"];
         this.number = msg_obj["contact_value"];
@@ -88,7 +94,7 @@ class Message {
         return myPromise;
     }
 
-    wait_for_response(timeout_bool) { //borken
+    wait_for_response(timeout_bool) {
         if (typeof (timeout_bool) !== "boolean") {
             timeout_bool = true;
         }
@@ -97,19 +103,17 @@ class Message {
             msg.mark_as_read();
         }
         const myPromise = new Promise((resolve, reject) => {
-            const loop = setInterval(() => {
-                const unread_messages = this.self.get_unread_messages();
-                const filtered = unread_messages.get({ number: this.number });
-                if (filtered.length != 0) {
-                    clearInterval(loop);
-                    resolve(filtered[0]);
+            const waiter = msg => {
+                if (msg.number == this.number) {
+                    resolve(msg);
                 }
-            }, 200);
+            };
+            this.self.on("message", waiter);
             if (timeout_bool) {
                 setTimeout(() => {
-                    clearInterval(loop);
+                    this.self.removeListener(waiter);
                     reject("Timeout");
-                }, 10 * 60);
+                }, 10 * 60 * 1000);
             }
         });
         return myPromise;
