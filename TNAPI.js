@@ -19,9 +19,13 @@ class Client extends EventEmitter {
     /**
      * Please run init after this.  I needed async, I'm sorry.
      */
+    static Message = Message;
+    static MultiMediaMessage = MultiMediaMessage;
+    static MessageContainer = MessageContainer;
     constructor(/*username, sid_cookie, csrf_cookie*/) {
         /*await this.init(username, sid_cookie, csrf_cookie);*/
         super();
+        this.delete_on_send = false;
     }
     async init(username, sid_cookie, csrf_cookie) {
         this._user_cookies = {};
@@ -68,6 +72,15 @@ class Client extends EventEmitter {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36 ',
             'x-csrf-token': await this.get_initial_csrf_token()
         };
+        if (this.delete_on_send) {
+            let messages = await this.get_all_read_messages();
+            while ( messages.length > 0 ) {
+                for (let x = 0; x < messages.length; x++) {
+                    messages[x].delete();
+                }
+                messages = await this.get_all_read_messages();
+            }
+        }
         setInterval(async () => {
             const unread_msgs = await this.get_unread_messages();
             for (let msg = 0; msg < unread_msgs.length; msg++) {
@@ -161,6 +174,42 @@ class Client extends EventEmitter {
             }
         }
     }
+
+    delete(id) {
+        const myPromise = new Promise((resolve, reject) => {
+            const req = https.request(`https://www.textnow.com/api/users/${this.username}/messages/${id}`, {
+                headers: {
+                    ...this.headers,
+                    cookie: this.processCookies(this.cookies)
+                },
+                method: "DELETE"
+            });
+            req.on("response", res => {
+                let body = "";
+                res.on("data", data => {
+                    body += data;
+                });
+                res.on("end", () => {
+                    if (Math.floor(res.statusCode/100) == 2) {
+                        this.reverseCookie(res.headers['set-cookie']);
+                        resolve(body);
+                    }
+                    else {
+                        reject(res);
+                    }
+                });
+                res.on("error", err => {
+                    reject(err);
+                });
+            });
+            req.on("error", err => {
+                reject(err);
+            });
+            req.end();
+        });
+        return myPromise;
+    }
+
     get_messages() {
         const req = https.request("https://www.textnow.com/api/users/" + this.username + "/messages", {
             headers: {
@@ -247,6 +296,12 @@ class Client extends EventEmitter {
 
     async get_read_messages() {
         const messages = await this.get_received_messages();
+        const read_messages = messages.filter(msg => msg.read);
+        return new MessageContainer(read_messages, this);
+    }
+
+    async get_all_read_messages() {
+        const messages = await this.get_messages();
         const read_messages = messages.filter(msg => msg.read);
         return new MessageContainer(read_messages, this);
     }
@@ -376,14 +431,17 @@ class Client extends EventEmitter {
                 response.on("data", data => {
                     body += data;
                 });
-                response.on("end", () => {
+                response.on("end", async () => {
                     if (response.statusCode == 200) {
                         this.reverseCookie(response.headers['set-cookie']);
+                        if (this.delete_on_send) {
+                            await this.delete(JSON.parse(body).id);
+                        }
                     }
                     else {
                         console.log(response.statusCode);
                     }
-                    resolve(response, body);
+                    resolve(body);
                 });
             });
             request.setHeader("content-type", "application/json")

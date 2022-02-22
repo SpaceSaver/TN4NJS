@@ -94,6 +94,10 @@ class Message {
         return myPromise;
     }
 
+    delete() {
+        return this.self.delete(this.id);
+    }
+
     wait_for_response(timeout_bool) {
         if (typeof (timeout_bool) !== "boolean") {
             timeout_bool = true;
