@@ -76,7 +76,7 @@ class Client extends EventEmitter {
             let messages = await this.get_all_read_messages();
             while ( messages.length > 0 ) {
                 for (let x = 0; x < messages.length; x++) {
-                    messages[x].delete();
+                    await messages[x].delete();
                 }
                 messages = await this.get_all_read_messages();
             }
@@ -195,7 +195,7 @@ class Client extends EventEmitter {
                         resolve(body);
                     }
                     else {
-                        reject(res);
+                        reject(res.statusCode);
                     }
                 });
                 res.on("error", err => {
