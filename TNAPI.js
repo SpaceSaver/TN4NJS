@@ -104,6 +104,7 @@ class Client extends EventEmitter {
      * @returns {String} Cookies primed for the cookie parameter 
      */
     processCookies(_cookies) {
+        if (!_cookies) return "";
         let outputString = "";
         let starter = true;
         for (var x in Object.keys(_cookies)) {
@@ -118,6 +119,7 @@ class Client extends EventEmitter {
         return outputString;
     }
     reverseCookie(_set_cookie) {
+        if (!_set_cookie) return;
         const kwookies = _set_cookie.map(elem => elem.split("; ")[0]);
         for (let x = 0; x < kwookies.length; x++) {
             let cookie = kwookies[x];
