@@ -125,7 +125,7 @@ class Client extends EventEmitter {
             let cookie = kwookies[x];
             this.cookies[cookie.split("=")[0]] = cookie.split("=")[1];
         }
-        return 
+        return;
     }
     get_initial_csrf_token() {
         const req = https.request('https://www.textnow.com/messaging', {
