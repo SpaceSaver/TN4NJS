@@ -389,7 +389,7 @@ class Client extends EventEmitter {
                                     send_file_req.end();
                                 }
                                 else {
-                                    reject("Received a non-200 response code.");
+                                    reject(`Received a non-200 response code. (${pres.statusCode})`);
                                 }
                             });
                         });
@@ -397,7 +397,7 @@ class Client extends EventEmitter {
                         place_file_req.end();
                     }
                     else {
-                        reject("Received a non-200 response code.");
+                        reject(`Received a non-200 response code. (${res.statusCode})`);
                     }
                 });
             });
