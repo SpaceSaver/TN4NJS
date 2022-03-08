@@ -315,7 +315,7 @@ class Client extends EventEmitter {
             const has_video = file_type == "video";
             const msg_type = file_type == "image" ? 2 : 4;
 
-            const file_url_holder_req = https.request('https://www.textnow.com/api/v3/attachment_url?message_type=2', {
+            const file_url_holder_req = https.request(`https://www.textnow.com/api/v3/attachment_url?message_type=${msg_type}`, {
                 headers: {
                     cookie: this.processCookies(this.cookies),
                     ...this.headers
