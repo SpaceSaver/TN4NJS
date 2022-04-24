@@ -16,12 +16,12 @@ const RECEIVED_MESSAGE_TYPE = 1;
 const SIP_ENDPOINT = "prod.tncp.textnow.com";
 
 class Client extends EventEmitter {
-    /**
-     * Please run init after this.  I needed async, I'm sorry.
-     */
     static Message = Message;
     static MultiMediaMessage = MultiMediaMessage;
     static MessageContainer = MessageContainer;
+    /**
+     * Please run init after this.  I needed async, I'm sorry.
+     */
     constructor(/*username, sid_cookie, csrf_cookie*/) {
         /*await this.init(username, sid_cookie, csrf_cookie);*/
         super();
