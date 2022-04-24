@@ -145,7 +145,7 @@ class Client extends EventEmitter {
                         resolve(/csrf-token" content="(?<csrf_token>.*?)"/.exec(body).groups.csrf_token);
                     }
                     else {
-                        reject({ response: response, error: "Non 200 response." });
+                        reject(`Non 200 response. (${response.statusCode})`);
                     }
                 });
             })
