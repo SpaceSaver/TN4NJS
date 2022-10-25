@@ -92,8 +92,8 @@ class Client extends EventEmitter {
     }
     /**
      * @private
-     * @param {String} text 
-     * @returns {String}
+     * @param {string} text 
+     * @returns {string}
      */
     _replace_newlines(text) {
         return text.replace(/(?<!\\)\n/g, "\n");
@@ -101,7 +101,7 @@ class Client extends EventEmitter {
     /**
      * 
      * @param {Object} _cookies 
-     * @returns {String} Cookies primed for the cookie parameter 
+     * @returns {string} Cookies primed for the cookie parameter 
      */
     processCookies(_cookies) {
         if (!_cookies) return "";

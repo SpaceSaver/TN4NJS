@@ -34,7 +34,7 @@ class Message {
     }
     /**
      * Send MMS message to sender of the current message.
-     * @param {String} file Path of file to upload.
+     * @param {string} file Path of file to upload.
      * @returns 
      */
     send_mms(file) {
@@ -42,7 +42,7 @@ class Message {
     }
     /**
      * Send SMS message to sender of the current message.
-     * @param {String} text Message to send.
+     * @param {string} text Message to send.
      * @returns 
      */
     send_sms(text) {
