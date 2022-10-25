@@ -5,7 +5,9 @@ const { Module } = require('module');
 const TNAPI = require("./TNAPI");
 
 const MESSAGE_TYPE = 0;
-
+/**
+ * Standard TextNow message object.
+ */
 class Message {
     /**
      * 
