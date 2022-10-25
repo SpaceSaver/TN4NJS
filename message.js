@@ -23,15 +23,28 @@ class Message {
         this.raw = msg_obj;
         this.self = outer_self;
     }
+    /**
+     * 
+     * @returns String representation of class.
+     */
     toString() {
         const class_name = this.constructor.name;
         const s = `<${class_name} number: ${this.number}, content: ${this.content}>`;
         return s;
     }
+    /**
+     * Send MMS message to sender of the current message.
+     * @param {String} file Path of file to upload.
+     * @returns 
+     */
     send_mms(file) {
         return this.self.send_mms(this.number, file);
     }
-
+    /**
+     * Send SMS message to sender of the current message.
+     * @param {String} text Message to send.
+     * @returns 
+     */
     send_sms(text) {
         return this.self.send_sms(this.number, text);
     }
